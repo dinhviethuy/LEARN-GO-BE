@@ -1,0 +1,55 @@
+# ===================================
+# Go Build & Binary
+# ===================================
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go build cache
+/go.sum
+*.log
+*.tmp
+
+# Output binaries
+bin/
+build/
+dist/
+tmp/
+*.db
+
+# ===================================
+# Air (Live Reload)
+# ===================================
+.air.toml
+tmp/
+tmp/*
+.air/
+
+# ===================================
+# Config & Env
+# ===================================
+.env
+.env.*
+config/*.local.json
+config/*.yaml
+config/*.yml
+
+# ===================================
+# IDE / Editor
+# ===================================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ===================================
+# OS Generated
+# ===================================
+.DS_Store
+Thumbs.db
+
+.history
