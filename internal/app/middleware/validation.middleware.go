@@ -5,6 +5,9 @@ import (
 	"be-learn/internal/constants"
 	"be-learn/internal/validatorx"
 	"be-learn/utils"
+	"encoding/json"
+	"errors"
+	"io"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -31,7 +34,25 @@ func Validate[T any](validateType constants.ValidateType) gin.HandlerFunc {
 		var bindErr error
 		switch validatekey {
 		case string(constants.ValidateBody):
-			bindErr = ctx.ShouldBindJSON(&data)
+			decoder := json.NewDecoder(ctx.Request.Body)
+			decoder.DisallowUnknownFields()
+
+			if err := decoder.Decode(&data); err != nil {
+				msg := err.Error()
+				if errors.Is(err, io.EOF) {
+					msg = "Body request trống — vui lòng gửi dữ liệu JSON"
+				}
+
+				ctx.JSON(http.StatusBadRequest, gin.H{
+					"errors": []dto.ValidationError{{
+						Field:   "body",
+						Message: msg,
+					}},
+				})
+				ctx.Abort()
+				return
+			}
+
 		case string(constants.ValidateQuery):
 			bindErr = ctx.ShouldBindQuery(&data)
 		case string(constants.ValidateParam):
