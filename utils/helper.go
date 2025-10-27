@@ -3,6 +3,9 @@ package utils
 import (
 	"be-learn/internal/app/dto"
 	"be-learn/internal/constants"
+	"log"
+	"os"
+	"strconv"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -56,4 +59,42 @@ func GetTypeValidate(t constants.ValidateType) (string, bool) {
 	default:
 		return "unknown", true
 	}
+}
+
+func GetEnv[T any](key string, fallback T) T {
+	value := os.Getenv(key)
+	if value == "" {
+		return fallback
+	}
+
+	var result any
+	var err error
+
+	switch any(fallback).(type) {
+	case int:
+		result, err = strconv.Atoi(value)
+	case int64:
+		var v int64
+		v, err = strconv.ParseInt(value, 10, 64)
+		result = v
+	case float64:
+		var v float64
+		v, err = strconv.ParseFloat(value, 64)
+		result = v
+	case bool:
+		var v bool
+		v, err = strconv.ParseBool(value)
+		result = v
+	case string:
+		result = value
+	default:
+		log.Fatalf("Không hỗ trợ kiểu dữ liệu cho key %s", key)
+	}
+
+	if err != nil {
+		log.Printf("Không parse được %s=%q, dùng giá trị mặc định", key, value)
+		return fallback
+	}
+
+	return result.(T)
 }

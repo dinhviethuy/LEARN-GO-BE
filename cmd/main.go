@@ -1,7 +1,9 @@
 package main
 
 import (
+	"be-learn/config"
 	"be-learn/internal/router"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,5 +16,5 @@ func main() {
 	router.RegisterAuthRoutes(api)
 	
 
-	r.Run(":8000")
+	r.Run(":" + strconv.Itoa(config.App.PORT))
 }
